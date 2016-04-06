@@ -2,18 +2,21 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
+	"os/exec"
 	"sync"
 	"time"
 )
 
 func ping(wg *sync.WaitGroup, host string) {
-	defer wg.Done()
+	var (
+		err    error
+	)
+	cmdName := "ping"
+	cmdArgs := []string{"-c1", "-W1", host}
 
-	//temporary pseudo logic of ping
-	if rand.Int()%2 == 1 {
+	defer wg.Done()
+	if _, err = exec.Command(cmdName, cmdArgs...).Output(); err != nil{
 		fmt.Println(host, "is down")
-		time.Sleep(1000 * time.Millisecond) //sleep 1 sec to simulate unreachable host
 	} else {
 		fmt.Println(host, "is up")
 	}
@@ -22,59 +25,15 @@ func ping(wg *sync.WaitGroup, host string) {
 func main() {
 	startTime := time.Now().UTC()
 
-	rand.Seed(time.Now().UnixNano() / (int64(time.Millisecond)/int64(time.Nanosecond)))
+	hosts := []string{
+			"192.168.2.1", 
+			"127.0.0.1", 
+			"www.google.com",
+			"10.0.10.156",
+			}
+
 	var wg sync.WaitGroup
 
-	hosts := []string{	"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y",
-						"q", "w", "e", "r", "t", "y" }
 	for i := 0; i < len(hosts); i++ {
 		wg.Add(1)
 		go ping(&wg, hosts[i])
