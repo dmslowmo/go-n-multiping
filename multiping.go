@@ -10,14 +10,12 @@ import (
 )
 
 func ping(wg *sync.WaitGroup, host string) {
-	var (
-		err    error
-	)
+	var err    error
 	cmdName := "ping"
 	cmdArgs := []string{"-c1", "-W1", host}
 
 	defer wg.Done()
-	if _, err = exec.Command(cmdName, cmdArgs...).Output(); err != nil{
+	if _, err = exec.Command(cmdName, cmdArgs...).Output(); err != nil {
 		fmt.Println(host, "is down")
 	} else {
 		fmt.Println(host, "is up")
@@ -25,14 +23,15 @@ func ping(wg *sync.WaitGroup, host string) {
 }
 
 func main() {
+	// get the starting time
 	startTime := time.Now().UTC()
 
+	// read the input file
 	inFile, _ := os.Open(os.Args[1])
-
 	scanner := bufio.NewScanner(inFile)
 
+	// use a goroutine for each ping
 	var wg sync.WaitGroup
-
 	for scanner.Scan() {
 		wg.Add(1)
 		host := scanner.Text()
@@ -40,6 +39,7 @@ func main() {
 	}
 	wg.Wait()
 
+	// get the ending time and calculate the total duration
 	endTime := time.Now().UTC()
 	fmt.Println(endTime.Sub(startTime))
 }
