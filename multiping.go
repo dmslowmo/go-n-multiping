@@ -10,7 +10,7 @@ import (
 )
 
 func ping(wg *sync.WaitGroup, host string) {
-	var err    error
+	var err error
 	cmdName := "ping"
 	cmdArgs := []string{"-c1", "-W1", host}
 
@@ -27,7 +27,12 @@ func main() {
 	startTime := time.Now().UTC()
 
 	// read the input file
-	inFile, _ := os.Open(os.Args[1])
+	inFile, err := os.Open(os.Args[1])
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer inFile.Close() // close the file when main exits
 	scanner := bufio.NewScanner(inFile)
 
 	// use a goroutine for each ping
