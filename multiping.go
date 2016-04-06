@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"os/exec"
 	"sync"
 	"time"
@@ -25,18 +27,16 @@ func ping(wg *sync.WaitGroup, host string) {
 func main() {
 	startTime := time.Now().UTC()
 
-	hosts := []string{
-			"192.168.2.1", 
-			"127.0.0.1", 
-			"www.google.com",
-			"10.0.10.156",
-			}
+	inFile, _ := os.Open(os.Args[1])
+
+	scanner := bufio.NewScanner(inFile)
 
 	var wg sync.WaitGroup
 
-	for i := 0; i < len(hosts); i++ {
+	for scanner.Scan() {
 		wg.Add(1)
-		go ping(&wg, hosts[i])
+		host := scanner.Text()
+		go ping(&wg, host)
 	}
 	wg.Wait()
 
