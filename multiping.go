@@ -23,6 +23,12 @@ func ping(wg *sync.WaitGroup, host string) {
 }
 
 func main() {
+
+	if len(os.Args) < 2 {
+		fmt.Println("usage: go-n-multiping <hostlist.file>")
+		return
+	}
+
 	// get the starting time
 	startTime := time.Now().UTC()
 
