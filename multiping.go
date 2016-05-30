@@ -12,11 +12,11 @@ import (
 func ping(wg *sync.WaitGroup, host string) {
 	var err error
 	cmdName := "ping"
-	cmdArgs := []string{"-c1", "-W1", host}
+	cmdArgs := []string{"-c1", "-w1", host}
 
 	defer wg.Done()
 	if _, err = exec.Command(cmdName, cmdArgs...).Output(); err != nil {
-		fmt.Println(host, "is down")
+		fmt.Println(host, "is down: ", err)
 	} else {
 		fmt.Println(host, "is up")
 	}
