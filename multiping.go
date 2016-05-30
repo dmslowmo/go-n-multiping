@@ -9,6 +9,12 @@ import (
 	"time"
 )
 
+// variables to identify the build
+var (
+	Version string
+	Build   string
+)
+
 func ping(wg *sync.WaitGroup, host string) {
 	var err error
 	cmdName := "ping"
@@ -53,4 +59,8 @@ func main() {
 	// get the ending time and calculate the total duration
 	endTime := time.Now().UTC()
 	fmt.Println(endTime.Sub(startTime))
+	fmt.Println()
+	fmt.Println("Version: ", Version)
+	fmt.Println("Git commit hash: ", Build)
+
 }
